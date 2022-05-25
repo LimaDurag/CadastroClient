@@ -7,7 +7,7 @@ async function selectUsuario(){
     return rows;
 }
 
-async function getUsusarioId(id){
+async function getUsuarioId(id){
 
     const conn = await usuarioBD.connect();
     const sql = 'SELECT * FROM usuario WHERE id =?';
@@ -21,6 +21,7 @@ async function login(nome, senha){
     const conn = await usuarioBD.connect();
     const sql = 'SELECT * FROM usuario WHERE nome=? and senha=?';
     const values = [nome, seguranca.ocultarsenha(senha) ];
+    const [rows] = await conn.query(sql, values);
     if (rows.legth > 0 )
         return rows;
     else return null;    
@@ -36,4 +37,15 @@ async function deleteUsuario(id){
     const sql = 'DELETE FROM ususario where id=?;';
     return await conn.query (sql, [id]);
 }
+async function insertUsuario(usuario){
+    const conn = await usuarioBD.connect();
+    const sql = 'INSERT INTO ususario(nome, senha) VALUES (?,?);';
+    const values = [usuario.nome, seguranca.ocultarsenha(usuario.senha)];
+    return await conn.query (sql, values);
+}
+
+module.exports = {selectUsuario, insertUsuario, deleteUsuario, 
+updateUsuario, getUsuarioId, login};
+
+
 
